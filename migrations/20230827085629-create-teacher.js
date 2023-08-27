@@ -17,47 +17,47 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      videoLink: {
+      video_link: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      singleCourseDuration: {
+      single_course_duration: {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      availableMon: {
+      available_mon: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      availableTues: {
+      available_tues: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      availableWed: {
+      available_wed: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      availableThurs: {
+      available_thurs: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      availableFri: {
+      available_fri: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      availableSat: {
+      available_sat: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      availableSun: {
+      available_sun: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

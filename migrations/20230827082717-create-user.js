@@ -9,11 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      realName: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      nickname: {
+      name: {
         allowNull: false,
         type: Sequelize.STRING
       },
@@ -33,19 +29,21 @@ module.exports = {
         allowNull: true,
         type: Sequelize.TEXT
       },
-      isAdmin: {
+      is_admin: {
         allowNull: false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
       },
-      totalLearningTime: {
+      total_learning_time: {
         allowNull: false,
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        defaultValue: 0
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
