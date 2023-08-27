@@ -2,44 +2,56 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Teachers', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      realName: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      nickname: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      email: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      avartar: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       introduction: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.TEXT
       },
-      isAdmin: {
+      style: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      videoLink: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      singleCourseDuration: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      availableMon: {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      totalLearningTime: {
+      availableTues: {
         allowNull: false,
-        type: Sequelize.FLOAT
+        type: Sequelize.BOOLEAN
+      },
+      availableWed: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
+      availableThurs: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
+      availableFri: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
+      availableSat: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
+      availableSun: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
@@ -52,6 +64,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Teachers');
   }
 };
