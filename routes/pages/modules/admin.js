@@ -1,10 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../../controllers/pages/admin-controller')
-// const upload = require('../../../middleware/multer')
-// const categoryController = require('../../../controllers/pages/category-controller')
-
-// router.get('/', adminController.getUsers)
 
 // router.get('/restaurants/create', adminController.createRestaurant)
 // router.get('/restaurants/:id/edit', adminController.editRestaurant)
@@ -22,6 +18,7 @@ const adminController = require('../../../controllers/pages/admin-controller')
 // router.get('/categories/:id', categoryController.getCategories)
 // router.put('/categories/:id', categoryController.putCategory)
 // router.delete('/categories/:id', categoryController.deleteCategory)
+router.get('/users', adminController.getUsers)
 
-// router.use('/', (req, res) => res.redirect('/admin/restaurants'))
+router.use('/', (req, res) => res.redirect('/admin/users'))
 module.exports = router
