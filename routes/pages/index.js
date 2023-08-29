@@ -13,7 +13,7 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
-router.use('/admin/signin', adminController.signInPage)
+router.get('/logout', userController.logout)
 
 router.use('/admin', authenticatedAdmin, admin)
 
