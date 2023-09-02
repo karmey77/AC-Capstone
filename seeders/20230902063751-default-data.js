@@ -6,6 +6,7 @@ const SEED_USER = {
   email: 'root@example.com',
   password: '12345678'
 }
+const faker = require('faker')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -19,11 +20,12 @@ module.exports = {
       updated_at: new Date()
     }], {})
       .then(() => queryInterface.bulkInsert('Users',
-        Array.from({ length: 50 }).map((_, i) =>
+        Array.from({ length: 100 }).map((_, i) =>
           ({
             name: `user${i + 1}`,
             email: `user${i + 1}@example.com`,
             password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
+            avartar: faker.internet.avatar(),
             is_admin: 0,
             created_at: new Date(),
             updated_at: new Date()
@@ -32,7 +34,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Teachers', null, {})
-      .then(() => queryInterface.bulkDelete('Users', null, {}))
+    return queryInterface.bulkDelete('Users', null, {})
   }
 }
