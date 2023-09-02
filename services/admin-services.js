@@ -5,8 +5,8 @@ const adminServices = {
         User.findAll({
 
             raw: true,
-            nest: true,
-            include: [Teacher]
+            nest: true
+            // include: [Teacher]
         })
             .then(users => {
                 return cb(null, { users })

@@ -13,18 +13,31 @@
                     <li class="nav-item">
                         <a href="/admin" class="nav-link">Admin 後台</a>
                     </li>
+
+                    {{else}}
+
+                        {{#if user.isTeacher}}
+                        <li class="nav-item">
+                            <a href="/users/{{user.id}}" style="padding-right: .5rem;"><button
+                                    class="btn btn-light">老師個人檔案</button></a>
+                        </li>
+                        {{/if}}
+
+                        <li class="nav-item d-inline-flex align-items-center">
+                            <span class="text-white nav-link">Hi, {{ user.email }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/users/{{user.id}}" style="padding-right: .5rem;"><button
+                                    class="btn btn-light">學生個人檔案</button></a>
+                        </li>
+
+
                     {{/if}}
-                    {{#if user.isTeacher}}
-                    <li class="nav-item">
-                        <a href="/users/{{user.id}}" style="padding-right: .5rem;"><button class="btn btn-light">老師個人檔案</button></a>
-                    </li>
-                    {{/if}}
-                    <li class="nav-item d-inline-flex align-items-center">
-                        <span class="text-white nav-link">Hi, {{ user.email }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/users/{{user.id}}" style="padding-right: .5rem;"><button class="btn btn-light">學生個人檔案</button></a>
-                    </li>
+
+
+                    
+
+
                     <li class="nav-item">
                         <a href="/logout"><button class="btn btn-outline-success my-sm-0 my-2">Logout</button></a>
                     </li>
