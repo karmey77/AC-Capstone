@@ -33,7 +33,7 @@ module.exports = {
           available_sun: Math.random() < 0.5 ? 1 : 0,
           created_at: new Date(),
           updated_at: new Date(),
-          user_id: users[Math.floor(Math.random() * users.length)].id
+          user_id: userId
         }
       })
     )

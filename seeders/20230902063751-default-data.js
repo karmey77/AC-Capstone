@@ -14,6 +14,7 @@ module.exports = {
     return queryInterface.bulkInsert('Users', [{
       name: SEED_USER.name,
       email: SEED_USER.email,
+      avartar: faker.internet.avatar(),
       password: bcrypt.hashSync(SEED_USER.password, bcrypt.genSaltSync(10), null),
       is_admin: 1,
       created_at: new Date(),
