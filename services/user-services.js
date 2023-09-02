@@ -17,7 +17,7 @@ const userServices = {
         email: req.body.email,
         password: hash
       }))
-      .then((user) => {
+      .then(user => {
         req.flash('success_messages', '成功註冊帳號！') // 並顯示成功訊息
         return user
       })

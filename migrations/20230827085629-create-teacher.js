@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Teachers', {
       id: {
         allowNull: false,
@@ -9,13 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      introduction: {
+      teacher_introduction: {
         allowNull: false,
         type: Sequelize.TEXT
       },
       style: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       video_link: {
         allowNull: false,
@@ -61,9 +61,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Teachers');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Teachers')
   }
-};
+}
