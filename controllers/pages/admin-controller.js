@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../../models')
+const { User } = require('../../models')
 const adminServices = require('../../services/admin-services')
 
 const adminController = {

@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Rating.init({
     comment: DataTypes.TEXT,
-    rating: DataTypes.FLOAT,
-    createdAt: DataTypes.DATETIME
+    rating: DataTypes.FLOAT
   }, {
     sequelize,
     modelName: 'Rating',

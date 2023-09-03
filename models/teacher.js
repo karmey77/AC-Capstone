@@ -19,15 +19,15 @@ module.exports = (sequelize, DataTypes) => {
     teacherIntroduction: DataTypes.TEXT,
     style: DataTypes.TEXT,
     videoLink: DataTypes.STRING,
-    s
-  }, {ingleCourseDuration: DataTypes.FLOAT,
+    singleCourseDuration: DataTypes.FLOAT,
     availableMon: DataTypes.BOOLEAN,
     availableTues: DataTypes.BOOLEAN,
     availableWed: DataTypes.BOOLEAN,
     availableThurs: DataTypes.BOOLEAN,
     availableFri: DataTypes.BOOLEAN,
     availableSat: DataTypes.BOOLEAN,
-    availableSun: DataTypes.BOOLEAN,
+    availableSun: DataTypes.BOOLEAN
+  }, {
     sequelize,
     modelName: 'Teacher',
     tableName: 'Teachers',
