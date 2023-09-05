@@ -14,7 +14,8 @@ module.exports = {
     return queryInterface.bulkInsert('Users', [{
       name: SEED_USER.name,
       email: SEED_USER.email,
-      avartar: faker.internet.avatar(),
+      avartar: `https://robohash.org/user${SEED_USER.name}.png?size=400x400`,
+      introduction: faker.lorem.text(),
       password: bcrypt.hashSync(SEED_USER.password, bcrypt.genSaltSync(10), null),
       is_admin: 1,
       created_at: new Date(),
@@ -26,7 +27,8 @@ module.exports = {
             name: `user${i + 1}`,
             email: `user${i + 1}@example.com`,
             password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
-            avartar: faker.internet.avatar(),
+            avartar: `https://robohash.org/user${i + 1}.png?size=400x400`,
+            introduction: faker.lorem.text(),
             is_admin: 0,
             created_at: new Date(),
             updated_at: new Date()

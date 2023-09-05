@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Registeration.init({
-    course_time_start: DataTypes.DATE,
-    course_time_end: DataTypes.DATE
+    courseTimeStart: DataTypes.DATE,
+    courseTimeEnd: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Registeration',

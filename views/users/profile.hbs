@@ -1,0 +1,66 @@
+<div class="row mb-5">
+    <div class="col-md-4">
+        <img class="img-responsive center-block mb-5" src="{{user.avartar}}"
+            style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <h4>New Schedule</h4>
+                <div style="display:flex; justify-content: space-even">
+                    {{#each user.newRegisterations}}
+                    <div style="margin-right: 1rem; outline: 1px ridge darkgrey; border-radius: 1rem; padding-left: 1rem; padding-top: 1rem; padding-right: .7rem;">
+                        <p>Start Time: {{prettyTime this.courseTimeStart}}</p>
+                        <p>End Time: {{prettyTime this.courseTimeEnd}}</p>
+                        <p>Teacher's Name: {{this.teacher.name}}</p>
+                        <a href="{{this.teacher.videoLink}}"><p>Session Link</p></a>
+                    </div>
+                    {{/each}}
+                </div>
+                <hr>
+            </div>
+        </div>
+
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <h4>{{favoritedCounts}}Lesson History</h4>
+                {{#each favoritedRestaurants}}
+                <a href="/restaurants/{{this.id}}">
+                    <img class="img-responsive center-block mb-5" src="{{this.image}}"
+                        style="width: 50px; height: 50px; transition: opacity 0.5s; opacity:0;"
+                        onload="this.style.opacity=1;">
+                </a>
+                {{/each}}
+            </div>
+        </div>
+        <hr>
+
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <h4>我的學習時數名次</h4>
+                <li>Ranking: 第 {{user.ranking}} 名</li>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mb-5">
+    <div class="col-md-4">
+        <h1>{{user.name}}</h1>
+        <p>{{user.email}}</p>
+        <h3>About me</h3>
+        <p>{{user.introduction}}</p>
+        <hr>
+        <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit">Edit</a>
+        {{!-- <h4>{{followingCounts}} followings（追蹤者）</h4>
+        {{#each followings}}
+        <a href="/users/{{this.id}}">
+            <img class="img-responsive center-block mb-5" src="{{this.image}}"
+                style="width: 50px; height: 50px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}} --}}
+    </div>
+</div>

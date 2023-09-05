@@ -13,12 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasOne(models.Teacher)
       User.hasMany(models.Rating)
+      User.hasMany(models.Registeration)
     }
   }
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN, // 一定要加！
+    introduction: DataTypes.TEXT,
+    totalLearningTime: DataTypes.FLOAT,
     password: DataTypes.STRING,
     avartar: DataTypes.STRING
   }, {

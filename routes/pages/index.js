@@ -16,6 +16,10 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
+router.get('/users/:id', userController.getUser)
+// router.get('/users/:id', authenticated, userController.getUser)
+
+
 router.get('/', authenticated, (req, res) => {
   res.render('index')
 })

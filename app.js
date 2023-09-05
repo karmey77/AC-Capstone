@@ -13,10 +13,10 @@ const app = express()
 const port = process.env.PORT || 3000
 const bcrypt = require('bcryptjs')
 const { getUser } = require('./helpers/auth-helpers')
-// const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const SESSION_SECRET = 'SECRET'
 
-app.engine('hbs', handlebars({ extname: '.hbs' })) // app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
