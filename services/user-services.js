@@ -39,8 +39,8 @@ const userServices = {
         if (!user) throw new Error("User didn't exist!")
         delete user.password
 
+        // Registeration
         const registrations = Array.isArray(user.Registerations) ? user.Registerations : [user.Registerations]
-
         // 使用 Promise.all 等待所有 Teacher.findAll 操作完成
         const teacherPromises = registrations.map(async registration => {
           // 先依據每個註冊資訊搜尋老師
@@ -60,12 +60,28 @@ const userServices = {
             .then(user => {
               return user[0].name
             })
+          teacher.avartar = await User.findAll({
+            where: { id: teacher.UserId },
+            raw: true
+          })
+            .then(user => {
+              return user[0].avartar
+            })
+
+          const rating = await Rating.findOne({
+            where: {
+              teacher_id: teacher.id,
+              user_id: user.id
+            },
+            raw: true
+          })
+          teacher.isRated = !!rating
+          teacher.rating = rating || null
 
           registration.teacher = teacher
         })
 
         await Promise.all(teacherPromises)
-
         let newRegisterations = []
         if (user.Registerations.length >= 2) {
           await user.Registerations.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -74,6 +90,12 @@ const userServices = {
           newRegisterations = Array.isArray(user.Registerations) ? user.Registerations : [user.Registerations]
         }
         user.newRegisterations = newRegisterations
+
+        // Lesson history
+        const currentDate = new Date()
+        const lessonHistory = registrations.filter(lesson => lesson.courseTimeEnd < currentDate)
+        console.log(lessonHistory)
+        user.lessonHistory = lessonHistory
 
         return user
       })
