@@ -1,5 +1,5 @@
 const { User, Rating, Teacher, Registeration } = require('../models')
-// const { imgurFileHandler } = require('../../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 
 const userServices = {
@@ -94,9 +94,45 @@ const userServices = {
         // Lesson history
         const currentDate = new Date()
         const lessonHistory = registrations.filter(lesson => lesson.courseTimeEnd < currentDate)
-        console.log(lessonHistory)
         user.lessonHistory = lessonHistory
 
+        return user
+      })
+      .then(user => cb(null, { user }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  editUser: (req, cb) => {
+    return User.findByPk(req.params.id, {
+      raw: true,
+      nest: true
+    })
+      .then(async user => {
+        if (!user) throw new Error("User didn't exist!")
+        delete user.password
+
+        return user
+      })
+      .then(user => cb(null, { user }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  putUser: (req, cb) => {
+    const { name, introduction } = req.body
+    if (!name) throw new Error('User name is required!')
+    const { file } = req // 把檔案取出來
+    return Promise.all([ // 非同步處理
+      User.findByPk(req.params.id), // 去資料庫查有沒有這個人
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filePath]) => { // 以上兩樣事都做完以後
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({ // 修改這筆資料
+          name,
+          introduction,
+          avartar: filePath || user.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
         return user
       })
       .then(user => cb(null, { user }))
