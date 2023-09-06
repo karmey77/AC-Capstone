@@ -11,7 +11,6 @@ const userController = {
   signUp: (req, res, next) => {
     userServices.signUp(req, (err, data) => {
       if (err) return next(err)
-      req.flash('success_messages', 'user was successfully created')
       req.session.createdData = data
       return res.redirect('/signin')
     })
@@ -38,6 +37,9 @@ const userController = {
     userServices.putUser(req, (err, data) => err
       ? next(err)
       : res.redirect(`/users/${req.params.id}`))
+  },
+  getTeachers: (req, res, next) => {
+    userServices.getTeachers(req, (err, data) => err ? next(err) : res.render('index', data))
   }
 }
 module.exports = userController

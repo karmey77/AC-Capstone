@@ -137,6 +137,23 @@ const userServices = {
       })
       .then(user => cb(null, { user }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  getTeachers: (req, cb) => {
+    Teacher.findAll({
+      raw: true,
+      nest: true,
+      include: { model: User }
+    })
+      .then(teachers => {
+        const data = teachers.map(r => ({
+          ...r,
+          teacherIntroduction: r.teacherIntroduction.substring(0, 40) + ' ......'
+        }))
+
+        return data
+      })
+      .then(teachers => cb(null, { teachers }))
+      .catch(err => cb(err))
   }
 }
 
