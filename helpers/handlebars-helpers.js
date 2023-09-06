@@ -11,6 +11,13 @@ module.exports = {
 
     return output
   },
+  getFlagEmoji: countryCode => {
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt())
+    return String.fromCodePoint(...codePoints)
+  },
   ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
   }

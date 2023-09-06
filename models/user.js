@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN, // 一定要加！
     introduction: DataTypes.TEXT,
+    nation: DataTypes.STRING,
     totalLearningTime: DataTypes.FLOAT,
     password: DataTypes.STRING,
     avartar: DataTypes.STRING

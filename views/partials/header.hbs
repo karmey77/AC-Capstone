@@ -11,7 +11,7 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-md-0">
                     {{#if user.isAdmin}}
                     <li class="nav-item">
-                        <a href="/admin" class="nav-link">Admin 後台</a>
+                        <a href="/admin" class="nav-link">使用者清單</a>
                     </li>
 
                     {{else}}
@@ -22,7 +22,6 @@
                                     class="btn btn-light">老師個人檔案</button></a>
                         </li>
                         {{/if}}
-
                         <li class="nav-item d-inline-flex align-items-center">
                             <span class="text-white nav-link">Hi, {{ user.email }}</span>
                         </li>
@@ -33,10 +32,6 @@
 
 
                     {{/if}}
-
-
-                    
-
 
                     <li class="nav-item">
                         <a href="/logout"><button class="btn btn-outline-success my-sm-0 my-2">Logout</button></a>

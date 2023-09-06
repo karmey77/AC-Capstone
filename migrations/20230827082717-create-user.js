@@ -34,6 +34,11 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: 0
       },
+      nation: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: 'TW'
+      },
       total_learning_time: {
         allowNull: false,
         type: Sequelize.FLOAT,
