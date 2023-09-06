@@ -1,4 +1,5 @@
 const { User, Rating, Teacher, Registeration } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 
@@ -139,20 +140,30 @@ const userServices = {
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   getTeachers: (req, cb) => {
-    Teacher.findAll({
+    const DEFAULT_LIMIT = 6
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+
+    return Teacher.findAndCountAll({
       raw: true,
       nest: true,
+      limit,
+      offset,
       include: { model: User }
     })
       .then(teachers => {
-        const data = teachers.map(r => ({
+        const data = teachers.rows.map(r => ({
           ...r,
           teacherIntroduction: r.teacherIntroduction.substring(0, 40) + ' ......'
         }))
-
-        return data
+        const pagination = getPagination(limit, page, teachers.count)
+        return [data, pagination]
       })
-      .then(teachers => cb(null, { teachers }))
+      .then(([data, pagination]) => cb(null, {
+        teachers: data,
+        pagination: pagination
+      }))
       .catch(err => cb(err))
   }
 }
