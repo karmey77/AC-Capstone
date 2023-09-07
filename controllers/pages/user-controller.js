@@ -43,6 +43,9 @@ const userController = {
   },
   getTeacher: (req, res, next) => {
     userServices.getTeacher(req, (err, data) => err ? next(err) : res.render('users/teacher-profile', data))
+  },
+  searchTeachers: (req, res, next) => {
+    userServices.getTeachers(req, (err, data) => err ? next(err) : res.render('index', data))
   }
 }
 module.exports = userController

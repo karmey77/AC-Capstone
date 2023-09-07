@@ -22,7 +22,8 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
-router.get('/', authenticated, userController.getTeachers)
+router.get('/search', userController.searchTeachers)
+router.get('/', userController.getTeachers)
 
 router.use('/', generalErrorHandler)
 

@@ -2,8 +2,9 @@ const { User, Rating, Teacher, Registeration } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
+const { Op, literal } = require('sequelize') // Import Op and literal
 
-function generateAllSessions(period) {
+function generateAllSessions (period) {
   const output = []
 
   for (let i = 18; i < 22; i++) {
@@ -176,17 +177,30 @@ const userServices = {
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   getTeachers: (req, cb) => {
+    const keyword = req.query.keyword || null
     const DEFAULT_LIMIT = 6
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
 
+    // Build the where clause to search for Teachers with associated Users
+    const whereClause = keyword
+      ? {
+          '$User.name$': {
+            [Op.and]: [
+              literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
+            ]
+          }
+        }
+      : {} // Empty where clause if keyword is not provided
+
     return Teacher.findAndCountAll({
       raw: true,
       nest: true,
       limit,
+      keyword,
       offset,
-      include: { model: User }
+      include: [{ model: User, where: whereClause }] // Include User with the where clause
     })
       .then(teachers => {
         const data = teachers.rows.map(r => ({
@@ -194,11 +208,14 @@ const userServices = {
           teacherIntroduction: r.teacherIntroduction.substring(0, 40) + ' ...'
         }))
         const pagination = getPagination(limit, page, teachers.count)
-        return [data, pagination]
+        const itemsWithContext = pagination.pages.map(pageNumber => ({ page: pageNumber, keyword }))
+        return [data, pagination, itemsWithContext]
       })
-      .then(([data, pagination]) => cb(null, {
+      .then(([data, pagination, itemsWithContext]) => cb(null, {
         teachers: data,
-        pagination: pagination
+        pagination: pagination,
+        paginationWithKeyword: itemsWithContext,
+        keyword: keyword
       }))
       .catch(err => cb(err))
   },
