@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 const { Op, literal } = require('sequelize') // Import Op and literal
 
-function generateAllSessions (period) {
+function generateAllSessions(period) {
   const output = []
 
   for (let i = 18; i < 22; i++) {
@@ -186,12 +186,12 @@ const userServices = {
     // Build the where clause to search for Teachers with associated Users
     const whereClause = keyword
       ? {
-          '$User.name$': {
-            [Op.and]: [
-              literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
-            ]
-          }
+        '$User.name$': {
+          [Op.and]: [
+            literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
+          ]
         }
+      }
       : {} // Empty where clause if keyword is not provided
 
     return Teacher.findAndCountAll({
@@ -237,14 +237,20 @@ const userServices = {
           where: { teacher_id: teacher.id },
           raw: true
         })
+        teacher.Ratings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+
         teacher.Registeration = await Registeration.findAll({
           where: { teacher_id: teacher.id },
-          raw: true
+          raw: true,
+          nest: true,
+          include: [
+            { model: User }
+          ]
         })
 
-        // All ratings
+        // // All ratings
         const ratings = Array.isArray(teacher.Ratings) ? teacher.Ratings : [teacher.Ratings]
-        teacher.ratings = ratings
+        // teacher.ratings = ratings
 
         // Mean rating
         // Calculate the sum of all ratings
@@ -301,7 +307,7 @@ const userServices = {
 
         // Filter with existing registerations
         // Function to check if two time intervals overlap
-        function doTimeIntervalsOverlap (interval1Start, interval1End, interval2Start, interval2End) {
+        function doTimeIntervalsOverlap(interval1Start, interval1End, interval2Start, interval2End) {
           return (
             (interval1Start <= interval2Start && interval1End >= interval2Start) ||
             (interval1Start <= interval2End && interval1End >= interval2End) ||
@@ -315,7 +321,6 @@ const userServices = {
         const availableCourseOptions = expandedSchedule.filter(option => {
           // Check if this option overlaps with any registration
           const overlap = registrations.some(registration => {
-            console.log(registration)
             return doTimeIntervalsOverlap(
               new Date(option.startTime).getTime(),
               new Date(option.endTime).getTime(),
@@ -329,7 +334,16 @@ const userServices = {
         })
 
         teacher.courseOptions = availableCourseOptions
-        console.log(teacher)
+
+        let newRegisterations = []
+        if (teacher.Registeration.length >= 2) {
+          await teacher.Registeration.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          newRegisterations = await teacher.Registeration.slice(0, 4)
+        } else {
+          newRegisterations = Array.isArray(teacher.Registeration) ? teacher.Registeration : [teacher.Registeration]
+        }
+        teacher.newRegisterations = newRegisterations
+
         return teacher
       })
       .then(teacher => cb(null, { teacher }))
