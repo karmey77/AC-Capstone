@@ -155,7 +155,7 @@ const userServices = {
       .then(teachers => {
         const data = teachers.rows.map(r => ({
           ...r,
-          teacherIntroduction: r.teacherIntroduction.substring(0, 40) + ' ......'
+          teacherIntroduction: r.teacherIntroduction.substring(0, 40) + ' ...'
         }))
         const pagination = getPagination(limit, page, teachers.count)
         return [data, pagination]
@@ -165,6 +165,40 @@ const userServices = {
         pagination: pagination
       }))
       .catch(err => cb(err))
+  },
+  getTeacher: (req, cb) => {
+    return Teacher.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [
+        { model: Rating },
+        { model: User },
+        { model: Registeration }
+      ]
+    })
+      .then(async teacher => {
+        if (!teacher) throw new Error("Teacher didn't exist!")
+        delete teacher.User.password
+
+        // Registeration
+        const ratings = Array.isArray(teacher.Ratings) ? teacher.Ratings : [teacher.Ratings]
+        teacher.ratings = ratings
+
+        // Mean rating
+        // Calculate the sum of all ratings
+        const totalRatings = ratings.length
+        let sumOfRatings = 0
+        for (const rating of ratings) {
+          sumOfRatings += rating.rating
+        }
+        // Calculate the mean (average) rating
+        teacher.meanRating = sumOfRatings / totalRatings
+
+
+        return teacher
+      })
+      .then(teacher => cb(null, { teacher }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   }
 }
 

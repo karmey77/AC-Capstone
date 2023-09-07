@@ -1,0 +1,73 @@
+<div class="row mb-5">
+    <div class="col-md-8">
+        <div style="display: flex;">
+            <img class="img-responsive center-block mb-5" src="{{teacher.User.avartar}}"
+                style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            <div class="col-md-4" style="padding-left: 2rem;">
+                <div class="row mb-5">
+                    <div class="col-md-10">
+                        <br>
+                        <h1>{{teacher.User.name}}</h1>
+                        <br>
+                        <br>
+                        <h5>{{getFlagEmoji teacher.User.nation}} {{teacher.User.nation}}</h5>
+                        <h5>❤️ {{teacher.meanRating}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <h4>Introduction</h4>
+                {{teacher.teacherIntroduction}}
+            </div>
+        </div>
+        <hr>
+
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <h4>Teaching Style</h4>
+                {{teacher.style}}
+            </div>
+        </div>
+        <hr>
+
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <h4>Lesson History</h4>
+                {{#each teacher.ratings}}
+                <p>
+                    <span style="background-color: yellow; padding-left: .5rem; padding-right: .5rem;">{{this.rating}}</span>
+                    <span style="padding-left: .5rem;">{{this.comment}}</span>
+                </p>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+
+        <form action="/users/teachers/{{teacher.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+            <div style="background-color: lightgrey;">
+                <label style="padding: 0.5rem 1rem 0rem .5rem; font-size: 150%;" class="form-label"
+                    for="coursetime">預約上課</label>
+            </div>
+            <br>
+            <select class="form-select" id="coursetime" name="coursetime">
+                <option>請選擇上課時間</option>
+                {{#each courseOptions}}
+                <option value={{this.avalibleDate}}>{{this.avalibleDate}}</option>
+                <option value={{this.startTime}}>{{prettyTime this.startTime}}~{{prettyTime this.endTime}}</option>
+                {{/each}}
+            </select>
+            <br>
+            <button style="margin-left: 70%;" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+
+
+    </div>
+</div>

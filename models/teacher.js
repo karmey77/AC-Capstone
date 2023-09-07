@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Teacher.belongsTo(models.User)
       Teacher.hasMany(models.Rating)
+      Teacher.hasMany(models.Registeration)
     }
   }
   Teacher.init({

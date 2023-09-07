@@ -6,8 +6,9 @@ module.exports = {
   relativeTimeFromNow: a => dayjs(a).fromNow(),
   prettyTime: a => {
     // 2023-08-05T18:00:00.000Z
+    const day = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'][new Date(a).getDay()]
     const formattedTime = a.toISOString().split(/[- T :]/)
-    const output = `${formattedTime[0]}-${formattedTime[1]}-${formattedTime[2]} ${formattedTime[3]}:${formattedTime[4]}`
+    const output = `${formattedTime[0]}-${formattedTime[1]}-${formattedTime[2]} (${day}.) ${formattedTime[3]}:${formattedTime[4]}`
 
     return output
   },

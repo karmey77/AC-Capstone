@@ -18,6 +18,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 
 // TODO: 要記得把驗證加回來
+router.get('/users/teachers/:id', userController.getTeacher)
 router.get('/users/:id/edit', userController.editUser)
 router.get('/users/:id', userController.getUser)
 // router.get('/users/:id', authenticated, userController.getUser)
