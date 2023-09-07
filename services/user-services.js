@@ -237,7 +237,7 @@ const userServices = {
           sumOfRatings += rating.rating
         }
         // Calculate the mean (average) rating
-        teacher.meanRating = sumOfRatings / totalRatings
+        teacher.meanRating = Math.round(sumOfRatings / totalRatings * 100) / 100
 
         // Course time
         // Get the current date in Taipei time (UTC+8)
