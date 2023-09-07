@@ -3,6 +3,42 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 
+function generateAllSessions(period) {
+  const output = []
+
+  for (let i = 18; i < 22; i++) {
+    let hours = i
+    const possibleMin = [0, 30]
+
+    possibleMin.forEach(ele => {
+      let mins = ele
+      const formattedTimeStart = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
+
+      switch (period) {
+        case 60:
+          const nextHour = hours + 1
+          if (nextHour <= 22) {
+            const formattedTimeEnd = `${nextHour.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
+            if (`${nextHour}${mins}` !== '2230') {
+              output.push({ startTime: formattedTimeStart, endTime: formattedTimeEnd })
+            }
+          }
+          break
+        case 30:
+          mins += 30
+          if (mins === 60) {
+            mins = 0
+            hours += 1
+          }
+          const formattedTimeEnd = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
+          output.push({ startTime: formattedTimeStart, endTime: formattedTimeEnd })
+          break
+      }
+    })
+  }
+  return output
+}
+
 const userServices = {
   signUp: (req, cb) => {
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
@@ -171,16 +207,25 @@ const userServices = {
       raw: true,
       nest: true,
       include: [
-        { model: Rating },
-        { model: User },
-        { model: Registeration }
+        // { model: Rating },
+        { model: User }
+        // { model: Registeration }
       ]
     })
       .then(async teacher => {
         if (!teacher) throw new Error("Teacher didn't exist!")
         delete teacher.User.password
 
-        // Registeration
+        teacher.Ratings = await Rating.findAll({
+          where: { teacher_id: teacher.id },
+          raw: true
+        })
+        teacher.Registeration = await Registeration.findAll({
+          where: { teacher_id: teacher.id },
+          raw: true
+        })
+
+        // All ratings
         const ratings = Array.isArray(teacher.Ratings) ? teacher.Ratings : [teacher.Ratings]
         teacher.ratings = ratings
 
@@ -194,7 +239,80 @@ const userServices = {
         // Calculate the mean (average) rating
         teacher.meanRating = sumOfRatings / totalRatings
 
+        // Course time
+        // Get the current date in Taipei time (UTC+8)
+        const taipeiTimeZoneOffset = 8 * 60 * 60 * 1000 // 8 hours in milliseconds
+        const todayInTaipei = new Date(Date.now() + taipeiTimeZoneOffset)
 
+        // Initialize an array to store the available dates for the next 14 days
+        const availableDates = []
+
+        // Loop through the next 14 days, starting from tomorrow
+        for (let i = 1; i <= 14; i++) {
+          // Calculate the date for the current day
+          const currentDate = new Date(todayInTaipei)
+          currentDate.setDate(todayInTaipei.getDate() + i)
+
+          // Check if the current day is available
+          const dayName = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'][currentDate.getUTCDay()]
+
+          if (teacher[`available${dayName}`]) {
+            availableDates.push(currentDate.toISOString().slice(0, 10))
+          }
+        }
+        // Generate all course options
+        const timeSlots = generateAllSessions(teacher.singleCourseDuration)
+        // Define the timezone offset for Taipei (UTC+8)
+        const taipeiTimeZoneOffsetMinutes = 8 * 60
+        // Initialize an array to store the expanded schedule
+        const expandedSchedule = []
+        // Loop through each available date and time slot to create combinations
+        for (const date of availableDates) {
+          for (const timeSlot of timeSlots) {
+            const startDate = new Date(`${date}T${timeSlot.startTime}:00`)
+            const endDate = new Date(`${date}T${timeSlot.endTime}:00`)
+            // Adjust times to Taipei timezone
+            startDate.setMinutes(startDate.getMinutes() + taipeiTimeZoneOffsetMinutes)
+            endDate.setMinutes(endDate.getMinutes() + taipeiTimeZoneOffsetMinutes)
+
+            expandedSchedule.push({
+              startTime: startDate,
+              endTime: endDate
+            })
+          }
+        }
+
+        // Filter with existing registerations
+        // Function to check if two time intervals overlap
+        function doTimeIntervalsOverlap (interval1Start, interval1End, interval2Start, interval2End) {
+          return (
+            (interval1Start <= interval2Start && interval1End >= interval2Start) ||
+            (interval1Start <= interval2End && interval1End >= interval2End) ||
+            (interval2Start <= interval1Start && interval2End >= interval1Start) ||
+            (interval2Start <= interval1End && interval2End >= interval1End)
+          )
+        }
+
+        // Filter available course options
+        const registrations = Array.isArray(teacher.Registeration) ? teacher.Registeration : [teacher.Registeration]
+        const availableCourseOptions = expandedSchedule.filter(option => {
+          // Check if this option overlaps with any registration
+          const overlap = registrations.some(registration => {
+            console.log(registration)
+            return doTimeIntervalsOverlap(
+              new Date(option.startTime).getTime(),
+              new Date(option.endTime).getTime(),
+              new Date(registration.courseTimeStart).getTime(),
+              new Date(registration.courseTimeEnd).getTime()
+            )
+          })
+
+          // Return true for options that don't overlap with any registration
+          return !overlap
+        })
+
+        teacher.courseOptions = availableCourseOptions
+        console.log(teacher)
         return teacher
       })
       .then(teacher => cb(null, { teacher }))

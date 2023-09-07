@@ -58,9 +58,8 @@
             <br>
             <select class="form-select" id="coursetime" name="coursetime">
                 <option>請選擇上課時間</option>
-                {{#each courseOptions}}
-                <option value={{this.avalibleDate}}>{{this.avalibleDate}}</option>
-                <option value={{this.startTime}}>{{prettyTime this.startTime}}~{{prettyTime this.endTime}}</option>
+                {{#each teacher.courseOptions}}
+                <option value="{{this.startTime}}">{{prettyTime this.startTime}}~{{prettyTime this.endTime}}</option>
                 {{/each}}
             </select>
             <br>
