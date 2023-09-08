@@ -15,10 +15,10 @@
             <div style="display: flex; align-items: center; top: 50%;"
                 onclick="window.location='/users/teachers/{{this.id}}'">
                 <img class="card-img-top img-fluid" src="{{this.User.avartar}}" alt="Card image cap" width="200px"
-                    height="200px" style="transition: opacity 0.5s; opacity:0; max-width: 50%; height: auto;"
+                    height="200px" style="padding: 1rem 2rem 0rem 1rem; transition: opacity 0.5s; opacity:0; max-width: 200px; height: auto;"
                     onload="this.style.opacity=1;">
-                <div style="align-items: center;">
-                    <h2>{{this.User.name}}</h2>
+                <div class="col-md-4" style="align-items: center;">
+                    <h2 style="display:white-space: normal;">{{this.User.name}}</h2>
                     <p>{{getFlagEmoji this.User.nation}} {{this.User.nation}}</p>
                 </div>
             </div>

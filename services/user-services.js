@@ -206,7 +206,7 @@ const userServices = {
       .then(teachers => {
         const data = teachers.rows.map(r => ({
           ...r,
-          teacherIntroduction: r.teacherIntroduction.substring(0, 40) + ' ...'
+          teacherIntroduction: r.teacherIntroduction.substring(0, 35) + ' ...'
         }))
         const pagination = getPagination(limit, page, teachers.count)
         const itemsWithContext = pagination.pages.map(pageNumber => ({ page: pageNumber, keyword }))
