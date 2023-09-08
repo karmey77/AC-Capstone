@@ -55,6 +55,7 @@ const userServices = {
       .then(hash => User.create({ // 上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
         name: req.body.name,
         email: req.body.email,
+        nation: req.body.nation,
         password: hash
       }))
       .then(user => {
