@@ -1,0 +1,9 @@
+<div class="mb-4 text-center">
+    <h1 class="h3 font-weight-normal mb-3">申請成為老師</h1>
+</div>
+<form action="/users/{{user.id}}/apply" method="POST">
+    {{> teacher-form}}
+</form>
+<div style="padding-top: 0.5rem;">
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</div>

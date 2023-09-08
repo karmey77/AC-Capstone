@@ -16,12 +16,12 @@
 
             {{#if user.isTeacher}}
             <li class="nav-item">
-                <a href="/users/{{user.id}}" style="padding-right: .5rem;"><button
+                <a href="/teachers/{{user.id}}" style="padding-right: .5rem;"><button
                         class="btn btn-light">老師個人檔案</button></a>
             </li>
             {{/if}}
             <li class="nav-item d-inline-flex align-items-center">
-                <a class="text-white nav-link" href="/users/{{user.id}}">成為老師</a>
+                <a class="text-white nav-link" href="/users/{{user.id}}/apply">成為老師</a>
             </li>
             {{/if}}
             <ul class="navbar-nav ms-auto mb-2 mb-md-0">

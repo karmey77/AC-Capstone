@@ -1,10 +1,11 @@
+/* eslint-disable no-case-declarations */
 const { User, Rating, Teacher, Registeration } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 const { Op, literal } = require('sequelize') // Import Op and literal
 
-function generateAllSessions(period) {
+function generateAllSessions (period) {
   const output = []
 
   for (let i = 18; i < 22; i++) {
@@ -46,7 +47,7 @@ const userServices = {
     if (req.body.password !== req.body.passwordCheck) throw new Error('確認密碼與密碼不相符！')
 
     // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
-    User.findOne({ where: { email: req.body.email } })
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10) // 前面加 return
@@ -186,12 +187,12 @@ const userServices = {
     // Build the where clause to search for Teachers with associated Users
     const whereClause = keyword
       ? {
-        '$User.name$': {
-          [Op.and]: [
-            literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
-          ]
+          '$User.name$': {
+            [Op.and]: [
+              literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
+            ]
+          }
         }
-      }
       : {} // Empty where clause if keyword is not provided
 
     return Teacher.findAndCountAll({
@@ -307,7 +308,7 @@ const userServices = {
 
         // Filter with existing registerations
         // Function to check if two time intervals overlap
-        function doTimeIntervalsOverlap(interval1Start, interval1End, interval2Start, interval2End) {
+        function doTimeIntervalsOverlap (interval1Start, interval1End, interval2Start, interval2End) {
           return (
             (interval1Start <= interval2Start && interval1End >= interval2Start) ||
             (interval1Start <= interval2End && interval1End >= interval2End) ||
@@ -358,9 +359,8 @@ const userServices = {
       ]
     })
       .then(async teacher => {
-        if (!teacher) throw new Error("User didn't exist!")
+        if (!teacher) throw new Error("Teacher didn't exist!")
         delete teacher.User.password
-        console.log(teacher)
         return teacher
       })
       .then(teacher => cb(null, { teacher }))
@@ -404,6 +404,57 @@ const userServices = {
       .then(teacher => {
         req.flash('success_messages', '老師資料編輯成功')
         return teacher
+      })
+      .then(teacher => cb(null, { teacher }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  getApply: (req, cb) => {
+    return User.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [
+        { model: Teacher }
+      ]
+    })
+      .then(user => {
+        if (user.Teacher.id) throw new Error('You are already a teacher!')
+        if (!user) throw new Error("User didn't exist!")
+        delete user.password
+        return user
+      })
+      .then(user => cb(null, { user }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  postApply: (req, cb) => {
+    console.log(req.body)
+    if (!req.body.teacherIntroduction) throw new Error('Teacher introduction is required!')
+    if (!req.body.style) throw new Error('Style is required!')
+    if (!req.body.singleCourseDuration) throw new Error('Single course duration is required!')
+    if (!req.body.videoLink) throw new Error('Video link is required!')
+
+    // 確認資料裡面沒有一樣的 UserId，若有，就建立一個 Error 物件並拋出
+    return Teacher.findOne({ where: { UserId: req.params.id } })
+      .then(teahcer => {
+        if (teahcer) throw new Error('You are already a teacher!')
+        return teahcer
+      })
+      .then(teahcer => Teacher.create({ // 上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
+        teacherIntroduction: req.body.teacherIntroduction,
+        style: req.body.style,
+        videoLink: req.body.videoLink,
+        singleCourseDuration: req.body.singleCourseDuration,
+        availableMon: req.body.availableMon === 'on',
+        availableTues: req.body.availableTues === 'on',
+        availableWed: req.body.availableWed === 'on',
+        availableThurs: req.body.availableThurs === 'on',
+        availableFri: req.body.availableFri === 'on',
+        availableSat: req.body.availableSat === 'on',
+        availableSun: req.body.availableSun === 'on',
+        UserId: req.params.id
+      }))
+      .then(user => {
+        req.flash('success_messages', '成功申請成為老師！') // 並顯示成功訊息
+        return user
       })
       .then(teacher => cb(null, { teacher }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
