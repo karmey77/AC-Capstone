@@ -46,6 +46,14 @@ const userController = {
   },
   getTeacherFromTeacher: (req, res, next) => {
     userServices.getTeacher(req, (err, data) => err ? next(err) : res.render('teachers/profile', data))
+  },
+  editTeacher: (req, res, next) => {
+    userServices.editTeacher(req, (err, data) => err ? next(err) : res.render('teachers/edit', data))
+  },
+  putTeacher: (req, res, next) => {
+    userServices.putTeacher(req, (err, data) => err
+      ? next(err)
+      : res.redirect(`/teachers/${req.params.id}`))
   }
 }
 module.exports = userController

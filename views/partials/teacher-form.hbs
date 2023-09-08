@@ -1,0 +1,60 @@
+<div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{teacher.User.name}}"
+        required>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="teacherIntroduction">Your Introduction</label>
+    <input class="form-control" type="text" id="teacherIntroduction" name="teacherIntroduction" placeholder="Enter introduction"
+        value="{{teacher.teacherIntroduction}}">
+</div>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="style">Your Style</label>
+    <input class="form-control" type="text" id="style" name="style" placeholder="Enter style" value="{{teacher.style}}">
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="singleCourseDuration">單堂課程時間（分鐘）</label>
+    <select class="form-select" id="singleCourseDuration" name="singleCourseDuration">
+        <option>請選擇單堂課程時間</option>
+        <option value=30 {{#ifCond teacher.singleCourseDuration 30}}selected{{/ifCond}}>30 分鐘</option>
+        <option value=60 {{#ifCond teacher.singleCourseDuration 60}}selected{{/ifCond}}>60 分鐘</option>
+    </select>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="videoLink">課程視訊連結</label>
+    <input class="form-control" type="url" id="videoLink" name="videoLink" placeholder="Enter course video link"
+        value="{{teacher.videoLink}}">
+</div>
+<div class="form-row mb-3">
+    <label class="form-label">開放預約</label>
+    <div>
+        <input type="checkbox" id="availableMon" name="availableMon" {{#if teacher.availableMon}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableMon">Mon.</label>
+
+        <input type="checkbox" id="availableTues" name="availableTues" {{#if teacher.availableTues}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableTues">Tues.</label>
+
+        <input type="checkbox" id="availableWed" name="availableWed" {{#if teacher.availableWed}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableWed">Wed.</label>
+
+        <input type="checkbox" id="availableThurs" name="availableThurs" {{#if teacher.availableThurs}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableThurs">Thurs.</label>
+
+        <input type="checkbox" id="availableFri" name="availableFri" {{#if teacher.availableFri}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableFri">Fri.</label>
+
+        <input type="checkbox" id="availableSat" name="availableSat" {{#if teacher.availableSat}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableSat">Sat.</label>
+
+        <input type="checkbox" id="availableSun" name="availableSun" {{#if teacher.availableSun}}checked{{/if}} />
+        <label style="padding-right: 1rem;" for="availableSun">Sun.</label>
+
+    </div>
+
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+</div>
+<button type="submit" class="btn btn-primary">Submit</button>

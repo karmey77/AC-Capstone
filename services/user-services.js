@@ -348,6 +348,65 @@ const userServices = {
       })
       .then(teacher => cb(null, { teacher }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  editTeacher: (req, cb) => {
+    return Teacher.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [
+        { model: User }
+      ]
+    })
+      .then(async teacher => {
+        if (!teacher) throw new Error("User didn't exist!")
+        delete teacher.User.password
+        console.log(teacher)
+        return teacher
+      })
+      .then(teacher => cb(null, { teacher }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  putTeacher: (req, cb) => {
+    const { name, teacherIntroduction, style, singleCourseDuration, videoLink } = req.body
+    if (!name) throw new Error('User name is required!')
+    if (!teacherIntroduction) throw new Error('Teacher introduction is required!')
+    if (!style) throw new Error('Style is required!')
+    if (!singleCourseDuration) throw new Error('Single course duration is required!')
+    if (!videoLink) throw new Error('Video link is required!')
+
+    const { file } = req // 把檔案取出來
+
+    return Promise.all([ // 非同步處理
+      Teacher.findByPk(req.params.id), // 去資料庫查有沒有這個老師
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(async ([teacher, filePath]) => { // 以上兩樣事都做完以後
+        if (!teacher) throw new Error("Teacher didn't exist!")
+
+        await User.findByPk(teacher.UserId, {
+          name,
+          filePath
+        })
+          .then(user => {
+            user.update({
+              name,
+              avartar: filePath || user.image
+            })
+          })
+
+        return teacher.update({ // 修改這筆資料
+          teacherIntroduction,
+          style,
+          singleCourseDuration,
+          videoLink
+        })
+      })
+      .then(teacher => {
+        req.flash('success_messages', '老師資料編輯成功')
+        return teacher
+      })
+      .then(teacher => cb(null, { teacher }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   }
 }
 
