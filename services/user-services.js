@@ -398,7 +398,14 @@ const userServices = {
           teacherIntroduction,
           style,
           singleCourseDuration,
-          videoLink
+          videoLink,
+          availableMon: req.body.availableMon === 'on',
+          availableTues: req.body.availableTues === 'on',
+          availableWed: req.body.availableWed === 'on',
+          availableThurs: req.body.availableThurs === 'on',
+          availableFri: req.body.availableFri === 'on',
+          availableSat: req.body.availableSat === 'on',
+          availableSun: req.body.availableSun === 'on'
         })
       })
       .then(teacher => {
