@@ -11,7 +11,7 @@ module.exports = {
     const usedUserIds = new Set()
 
     await queryInterface.bulkInsert('Teachers',
-      Array.from({ length: 25 }, () => {
+      Array.from({ length: 30 }, () => {
         let userId
         do {
           userId = users[Math.floor(Math.random() * users.length)].id

@@ -17,7 +17,7 @@ module.exports = {
     const filteredUsers = users.filter(user => !teachers.some(teacher => teacher.user_id === user.id))
 
     await queryInterface.bulkInsert('Ratings',
-      Array.from({ length: 50 }, () => {
+      Array.from({ length: 60 }, () => {
         return {
           comment: faker.lorem.sentences(),
           rating: Math.floor(Math.random() * 5) + 1,
