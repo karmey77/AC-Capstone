@@ -31,6 +31,7 @@ module.exports = {
             avartar: `https://robohash.org/user${i + 1}.png?size=400x400`,
             introduction: faker.lorem.text(),
             nation: faker.address.countryCode('alpha-2'),
+            total_learning_time: Math.floor(Math.random() * 11) * (Math.random() < 0.5 ? 60 : 30),
             is_admin: 0,
             created_at: new Date(),
             updated_at: new Date()
