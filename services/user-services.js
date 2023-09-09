@@ -7,6 +7,34 @@ const helpers = require('../helpers/auth-helpers')
 const bcrypt = require('bcryptjs')
 const { Op, literal } = require('sequelize') // Import Op and literal
 
+// 用來搜尋排名
+async function getUserRank (userId) {
+  try {
+    const user = await User.findByPk(userId) // 根据用户ID查找用户
+    if (!user) {
+      throw new Error('用户不存在')
+    }
+
+    // 查询所有用户的totalLearningTime并按totalLearningTime进行排序
+    const ranking = await User.findAll({
+      attributes: ['id', 'totalLearningTime'],
+      order: [['totalLearningTime', 'DESC']]
+    })
+
+    // 查找指定用户在排序后的结果中的索引（排名）
+    const userIndex = ranking.findIndex(u => u.id === userId)
+
+    // 用户排名是索引加1，因为数组索引是从0开始的
+    const userRank = userIndex + 1
+
+    return userRank
+  } catch (error) {
+    console.error('获取用户排名时发生错误:', error)
+    throw error
+  }
+}
+
+// 用來產生所有可以的上課時間
 function generateAllSessions (period) {
   const output = []
 
@@ -142,6 +170,9 @@ const userServices = {
         const currentDate = new Date()
         const lessonHistory = registrations.filter(lesson => lesson.courseTimeEnd < currentDate)
         user.lessonHistory = lessonHistory
+
+        // Rank
+        user.ranking = await getUserRank(user.id)
 
         if (user.newRegisterations.length === 0) delete user.newRegisterations
         if (user.lessonHistory.length === 0) delete user.lessonHistory
