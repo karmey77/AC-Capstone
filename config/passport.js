@@ -33,7 +33,6 @@ passport.use(new GoogleStrategy({
   callbackURL: 'http://localhost:3000/auth/google/callback'
 },
 function (accessToken, refreshToken, profile, cb) {
-  console.log(profile)
   const { name, email, picture, locale } = profile._json
   User.findOne({ where: { email: email } })
     .then(user => {
