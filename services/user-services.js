@@ -7,7 +7,7 @@ const helpers = require('../helpers/auth-helpers')
 const bcrypt = require('bcryptjs')
 const { Op, literal } = require('sequelize') // Import Op and literal
 
-function generateAllSessions (period) {
+function generateAllSessions(period) {
   const output = []
 
   for (let i = 18; i < 22; i++) {
@@ -70,18 +70,24 @@ const userServices = {
   getUser: (req, cb) => {
     return User.findByPk(req.params.id, {
       raw: true,
-      nest: true,
-      include: [
-        { model: Rating },
-        { model: Teacher },
-        { model: Registeration }
-      ]
+      nest: true
+      // include: [
+      //   { model: Rating },
+      //   { model: Teacher },
+      //   { model: Registeration }
+      // ]
     })
       .then(async user => {
         if (!user) throw new Error("User didn't exist!")
         delete user.password
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
 
         // Registeration
+        user.Registerations = await Registeration.findAll({
+          where: { user_id: user.id },
+          raw: true
+        })
         const registrations = Array.isArray(user.Registerations) ? user.Registerations : [user.Registerations]
         // 使用 Promise.all 等待所有 Teacher.findAll 操作完成
         const teacherPromises = registrations.map(async registration => {
@@ -118,9 +124,11 @@ const userServices = {
               },
               raw: true
             })
-            teacher.isRated = !!rating
-            teacher.rating = rating || null
 
+            teacher.isRated = !!rating
+            if (teacher.isRated) {
+              teacher.rating = rating.rating || null
+            }
             registration.teacher = teacher
           }
         })
@@ -142,7 +150,7 @@ const userServices = {
 
         if (!user.newRegisterations[0].id) delete user.newRegisterations
         if (user.lessonHistory.length === 0) delete user.lessonHistory
-
+        console.log(user.lessonHistory)
         return user
       })
       .then(user => cb(null, { user }))
@@ -195,12 +203,12 @@ const userServices = {
     // Build the where clause to search for Teachers with associated Users
     const whereClause = keyword
       ? {
-          '$User.name$': {
-            [Op.and]: [
-              literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
-            ]
-          }
+        '$User.name$': {
+          [Op.and]: [
+            literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
+          ]
         }
+      }
       : {} // Empty where clause if keyword is not provided
 
     return Teacher.findAndCountAll({
@@ -314,7 +322,7 @@ const userServices = {
 
         // Filter with existing registerations
         // Function to check if two time intervals overlap
-        function doTimeIntervalsOverlap (interval1Start, interval1End, interval2Start, interval2End) {
+        function doTimeIntervalsOverlap(interval1Start, interval1End, interval2Start, interval2End) {
           return (
             (interval1Start <= interval2Start && interval1End >= interval2Start) ||
             (interval1Start <= interval2End && interval1End >= interval2End) ||

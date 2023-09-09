@@ -49,8 +49,8 @@
                         </a>
                         <div style="display: flex;">
                             <p>Teacher's Name: {{this.teacher.name}}</p>
-                            {{#if isRated}}
-                            <p>Rating: {{this.rating}}/5</p>
+                            {{#if this.teacher.isRated}}
+                            <strong style="margin-left: 1rem; margin-bottom:0.5rem;">{{this.teacher.rating}}/5 分</strong>
                             {{else}}
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 style="margin-left: 1rem; margin-bottom:0.5rem;" data-bs-target="#exampleModal"
