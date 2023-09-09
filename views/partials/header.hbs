@@ -11,7 +11,7 @@
 
             {{else}}
 
-            {{#if user.Teacher}}
+            {{#if user.Teacher.id}}
             <li class="nav-item d-inline-flex align-items-center">
                 <a class="btn btn-light" href="/teachers/{{user.Teacher.id}}">Hi, {{ user.name }} 老師</a>
             </li>

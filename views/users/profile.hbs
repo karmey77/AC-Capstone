@@ -42,7 +42,7 @@
                     {{#each user.lessonHistory}}
                     <div
                         style="display: flex; align-items:center; margin-right:1rem; margin-top:1rem; outline: 1px ridge darkgrey; border-radius: 1rem; padding-left: 1rem; padding-top: 1rem; padding-right: .5rem;">
-                        <a style="padding-top: .5rem;" href="/teachers/{{this.teacher.id}}">
+                        <a style="padding-top: .5rem;" href="/users/teachers/{{this.teacher.id}}">
                             <img class="img-responsive center-block mb-5" src="{{this.teacher.avartar}}"
                                 style="width: 50px; height: 50px; transition: opacity 0.5s; opacity:0;"
                                 onload="this.style.opacity=1;">
@@ -52,7 +52,9 @@
                             {{#if isRated}}
                             <p>Rating: {{this.rating}}/5</p>
                             {{else}}
-                            <a style="padding-left: 1rem;" href="teacher/score/{{this.teacher.id}}">Score</a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                style="margin-left: 1rem; margin-bottom:0.5rem;" data-bs-target="#exampleModal"
+                                data-bs-teacherId={{this.teacher.id}} data-bs-name={{this.teacher.name}}>Score</button>
                             {{/if}}
                         </div>
                     </div>
@@ -70,3 +72,65 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="postForm" action="/users/score/{{teacher.id}}" method="POST">
+                    <div class="mb-3">
+                        <label for="teahcerId" class="col-form-label">Teacher Id:</label>
+                        <input class="form-control" id="teahcerId" name="teahcerId" readonly></input>
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label">
+                            <strong>Rating:</strong>
+                        </label>
+                        <select class="form-select" id="rating" name="rating" required>
+                            <option value="">請選擇評分</option>
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="col-form-label">Comment:</label>
+                        <textarea class="form-control" id="comment" name="comment"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">送出評分</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const exampleModal = document.getElementById('exampleModal')
+    const form = document.getElementById('postForm')
+    exampleModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        const button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        const teacherId = button.getAttribute('data-bs-teacherId')
+        const recipient = button.getAttribute('data-bs-name')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+
+        // Update the modal's content.
+        const modalTitle = exampleModal.querySelector('.modal-title')
+        const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+        modalTitle.textContent = '留個評論給 ' + recipient + ' 老師吧！'
+        modalBodyInput.value = teacherId
+        form.action = `/users/score/${teacherId}`
+    })
+</script>

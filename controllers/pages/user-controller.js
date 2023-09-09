@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs')
 // const { imgurFileHandler } = require('../../helpers/file-helpers')
 // const { tr } = require('faker/lib/locales')
 // const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../../models')
@@ -71,6 +70,13 @@ const userController = {
       console.log(data.registration)
       req.session.createdData = data
       return res.redirect(`/users/teachers/${data.registration.dataValues.TeacherId}`)
+    })
+  },
+  postRating: (req, res, next) => {
+    userServices.postRating(req, (err, data) => {
+      if (err) return next(err)
+      console.log(data)
+      return res.redirect(`/users/${data.rating.dataValues.id}`)
     })
   }
 }

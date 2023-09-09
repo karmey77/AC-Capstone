@@ -17,6 +17,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
+router.post('/users/score/:id', authenticated, userController.postRating)
 router.get('/users/teachers/:id', authenticated, userController.getTeacher)
 router.post('/users/teachers/:id', authenticated, userController.postRegisteration)
 router.get('/users/:id/edit', authenticated, userController.editUser)
