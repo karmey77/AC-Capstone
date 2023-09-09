@@ -16,3 +16,42 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{/if}}
+{{#if register_messages}}
+{{#each register_messages}}
+<div id="myModal" class="modal fade show" style="display: block;" aria-modal="true" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">預約成功</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>課程開始時間：{{this.startTime}}</p>
+                <p>課程結束時間：{{this.endTime}}</p>
+                <p>老師姓名：{{this.teacherName}}</p>
+                <p>視訊連結：{{this.teacherVideoLink}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{/each}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 當頁面載入後，自動顯示模態彈窗
+
+        const modal = document.getElementById('myModal');
+
+        // 如果模態上有 close 按鈕或叉叉符號，你可以綁定它們的點擊事件來關閉模態
+        const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+        });
+    });
+</script>
+{{/if}}

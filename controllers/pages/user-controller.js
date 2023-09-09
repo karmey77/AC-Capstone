@@ -64,6 +64,14 @@ const userController = {
       req.session.createdData = data
       return res.redirect(`/teachers/${req.session.createdData.teacher.dataValues.id}`)
     })
+  },
+  postRegisteration: (req, res, next) => {
+    userServices.postRegisteration(req, (err, data) => {
+      if (err) return next(err)
+      console.log(data.registration)
+      req.session.createdData = data
+      return res.redirect(`/users/teachers/${data.registration.dataValues.TeacherId}`)
+    })
   }
 }
 module.exports = userController

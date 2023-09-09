@@ -5,12 +5,14 @@ module.exports = {
   currentYear: () => dayjs().year(), // 取得當年年份作為 currentYear 的屬性值，並導出
   relativeTimeFromNow: a => dayjs(a).fromNow(),
   prettyTime: a => {
-    // 2023-08-05T18:00:00.000Z
-    const day = ['Sat', 'Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][new Date(a).getDay()]
-    const formattedTime = a.toISOString().split(/[- T :]/)
-    const output = `${formattedTime[0]}-${formattedTime[1]}-${formattedTime[2]} (${day}.) ${formattedTime[3]}:${formattedTime[4]}`
+    if (a) {
+      // 2023-08-05T18:00:00.000Z
+      const day = ['Sat', 'Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][new Date(a).getDay()]
+      const formattedTime = a.toISOString().split(/[- T :]/)
+      const output = `${formattedTime[0]}-${formattedTime[1]}-${formattedTime[2]} (${day}.) ${formattedTime[3]}:${formattedTime[4]}`
 
-    return output
+      return output
+    }
   },
   getFlagEmoji: countryCode => {
     const codePoints = countryCode
@@ -21,5 +23,8 @@ module.exports = {
   },
   ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
+  },
+  consoleLog: function (a) {
+    console.log(a)
   }
 }

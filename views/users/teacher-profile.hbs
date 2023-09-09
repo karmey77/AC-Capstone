@@ -38,7 +38,8 @@
                 <h4>Lesson History</h4>
                 {{#each teacher.ratings}}
                 <p>
-                    <span style="background-color: yellow; padding-left: .5rem; padding-right: .5rem;">{{this.rating}}</span>
+                    <span
+                        style="background-color: yellow; padding-left: .5rem; padding-right: .5rem;">{{this.rating}}</span>
                     <span style="padding-left: .5rem;">{{this.comment}}</span>
                 </p>
                 {{/each}}
@@ -47,20 +48,32 @@
     </div>
 
     <div class="col-md-4">
-        <form action="/users/teachers/{{teacher.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
-            <div style="background-color: lightgrey;">
-                <label style="padding: 0.5rem 1rem 0rem .5rem; font-size: 150%;" class="form-label"
-                    for="coursetime">預約上課</label>
-            </div>
-            <br>
-            <select class="form-select" id="coursetime" name="coursetime">
-                <option>請選擇上課時間</option>
-                {{#each teacher.courseOptions}}
-                <option value="{{this.startTime}}">{{prettyTime this.startTime}}~{{prettyTime this.endTime}}</option>
-                {{/each}}
-            </select>
-            <br>
-            <button style="margin-left: 70%;" type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <form action="/users/teachers/{{teacher.id}}" method="POST">
+            {{!-- <form> --}}
+                <div style="background-color: lightgrey;">
+                    <label style="padding: 0.5rem 1rem 0rem .5rem; font-size: 150%;" class="form-label"
+                        for="coursetime">預約上課</label>
+                </div>
+                <br>
+                <select class="form-select" id="coursetime" name="coursetime" required>
+                    <option value="">請選擇上課時間</option>
+                    {{#each teacher.courseOptions}}
+                    <option value="{{this.startTime}}">{{prettyTime this.startTime}}~{{prettyTime this.endTime}}
+                    </option>
+                    {{/each}}
+                </select>
+                <br>
+                <button style="margin-left: 80%;" type="submit" class="btn btn-primary">Submit</button>
+            </form>
     </div>
 </div>
+{{#if showMessage}}
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>預約成功</h2>
+        <p>{{message}}</p>
+    </div>
+</div>
+{{/if}}
+

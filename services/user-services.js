@@ -2,10 +2,12 @@
 const { User, Rating, Teacher, Registeration } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { prettyTime } = require('../helpers/handlebars-helpers')
+const helpers = require('../helpers/auth-helpers')
 const bcrypt = require('bcryptjs')
 const { Op, literal } = require('sequelize') // Import Op and literal
 
-function generateAllSessions (period) {
+function generateAllSessions(period) {
   const output = []
 
   for (let i = 18; i < 22; i++) {
@@ -92,33 +94,35 @@ const userServices = {
               return teacher[0]
             })
 
-          // 回到 Users 找老師名字
-          teacher.name = await User.findAll({
-            where: { id: teacher.UserId },
-            raw: true
-          })
-            .then(user => {
-              return user[0].name
+          if (teacher) {
+            // 回到 Users 找老師名字
+            teacher.name = await User.findAll({
+              where: { id: teacher.UserId },
+              raw: true
             })
-          teacher.avartar = await User.findAll({
-            where: { id: teacher.UserId },
-            raw: true
-          })
-            .then(user => {
-              return user[0].avartar
+              .then(user => {
+                return user[0].name
+              })
+            teacher.avartar = await User.findAll({
+              where: { id: teacher.UserId },
+              raw: true
             })
+              .then(user => {
+                return user[0].avartar
+              })
 
-          const rating = await Rating.findOne({
-            where: {
-              teacher_id: teacher.id,
-              user_id: user.id
-            },
-            raw: true
-          })
-          teacher.isRated = !!rating
-          teacher.rating = rating || null
+            const rating = await Rating.findOne({
+              where: {
+                teacher_id: teacher.id,
+                user_id: user.id
+              },
+              raw: true
+            })
+            teacher.isRated = !!rating
+            teacher.rating = rating || null
 
-          registration.teacher = teacher
+            registration.teacher = teacher
+          }
         })
 
         await Promise.all(teacherPromises)
@@ -135,6 +139,10 @@ const userServices = {
         const currentDate = new Date()
         const lessonHistory = registrations.filter(lesson => lesson.courseTimeEnd < currentDate)
         user.lessonHistory = lessonHistory
+
+        console.log(user)
+        if (!user.newRegisterations[0].id) delete user.newRegisterations
+        if (!user.lessonHistory[0].id) delete user.lessonHistory
 
         return user
       })
@@ -188,12 +196,12 @@ const userServices = {
     // Build the where clause to search for Teachers with associated Users
     const whereClause = keyword
       ? {
-          '$User.name$': {
-            [Op.and]: [
-              literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
-            ]
-          }
+        '$User.name$': {
+          [Op.and]: [
+            literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
+          ]
         }
+      }
       : {} // Empty where clause if keyword is not provided
 
     return Teacher.findAndCountAll({
@@ -309,7 +317,7 @@ const userServices = {
 
         // Filter with existing registerations
         // Function to check if two time intervals overlap
-        function doTimeIntervalsOverlap (interval1Start, interval1End, interval2Start, interval2End) {
+        function doTimeIntervalsOverlap(interval1Start, interval1End, interval2Start, interval2End) {
           return (
             (interval1Start <= interval2Start && interval1End >= interval2Start) ||
             (interval1Start <= interval2End && interval1End >= interval2End) ||
@@ -434,7 +442,6 @@ const userServices = {
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   postApply: (req, cb) => {
-    console.log(req.body)
     if (!req.body.teacherIntroduction) throw new Error('Teacher introduction is required!')
     if (!req.body.style) throw new Error('Style is required!')
     if (!req.body.singleCourseDuration) throw new Error('Single course duration is required!')
@@ -465,6 +472,48 @@ const userServices = {
         return user
       })
       .then(teacher => cb(null, { teacher }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  postRegisteration: (req, cb) => {
+    const thisUser = helpers.getUser(req)
+    return Teacher.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [
+        { model: User }
+      ],
+      thisUser
+    })
+      .then(async teacher => {
+        if (!teacher) throw new Error("Teacher didn't exist!")
+        const startTime = new Date(req.body.coursetime)
+        const endTime = new Date(startTime)
+        endTime.setMinutes(endTime.getMinutes() + teacher.singleCourseDuration)
+
+        // 在 Registeration 輸入資料
+        const result = await Registeration.create({ // 上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
+          courseTimeStart: startTime,
+          courseTimeEnd: endTime,
+          UserId: thisUser.id,
+          TeacherId: teacher.id
+        })
+
+        // 在 User update totalLearningTime
+        await User.increment('totalLearningTime', { by: teacher.singleCourseDuration, where: { id: thisUser.id } })
+
+        return [result, startTime, endTime, teacher.User.name, teacher.videoLink]
+      })
+      .then(([registration, startTime, endTime, teacherName, teacherVideoLink]) => {
+        const message = {}
+        message.startTime = prettyTime(startTime)
+        message.endTime = prettyTime(endTime)
+        message.teacherName = teacherName
+        message.teacherVideoLink = teacherVideoLink
+        console.log(message)
+        req.flash('register_messages', message)
+        return registration
+      })
+      .then(registration => cb(null, { registration }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   }
 }
