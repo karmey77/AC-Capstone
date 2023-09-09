@@ -26,5 +26,8 @@ module.exports = {
   },
   consoleLog: function (a) {
     console.log(a)
+  },
+  extract: function (a, b) {
+    return a[b]
   }
 }

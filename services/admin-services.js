@@ -1,4 +1,5 @@
 const { User, Teacher } = require('../models')
+const helpers = require('../helpers/auth-helpers')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const adminServices = {
@@ -23,8 +24,12 @@ const adminServices = {
           ...r,
           role: r.isAdmin ? '管理員' : (r.Teacher.id ? '老師' : '學生')
         }))
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
+
         return cb(null, {
           users: data,
+          thisUser: thisUser,
           pagination: getPagination(limit, page, users.count)
         })
       })

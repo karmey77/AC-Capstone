@@ -7,7 +7,7 @@ const helpers = require('../helpers/auth-helpers')
 const bcrypt = require('bcryptjs')
 const { Op, literal } = require('sequelize') // Import Op and literal
 
-function generateAllSessions(period) {
+function generateAllSessions (period) {
   const output = []
 
   for (let i = 18; i < 22; i++) {
@@ -145,7 +145,6 @@ const userServices = {
 
         if (!user.newRegisterations[0].id) delete user.newRegisterations
         if (user.lessonHistory.length === 0) delete user.lessonHistory
-        console.log(user.lessonHistory)
         return [user, thisUser]
       })
       .then(([user, thisUser]) => cb(null, { user, thisUser }))
@@ -159,10 +158,15 @@ const userServices = {
       .then(async user => {
         if (!user) throw new Error("User didn't exist!")
         delete user.password
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
 
-        return user
+        return [user, thisUser]
       })
-      .then(user => cb(null, { user }))
+      .then(([user, thisUser]) => cb(null, {
+        user: user,
+        thisUser: thisUser
+      }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   putUser: (req, cb) => {
@@ -200,12 +204,12 @@ const userServices = {
     // Build the where clause to search for Teachers with associated Users
     const whereClause = keyword
       ? {
-        '$User.name$': {
-          [Op.and]: [
-            literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
-          ]
+          '$User.name$': {
+            [Op.and]: [
+              literal(`LOWER(User.name) LIKE LOWER('%${keyword}%')`) // Case-insensitive search
+            ]
+          }
         }
-      }
       : {} // Empty where clause if keyword is not provided
 
     return Teacher.findAndCountAll({
@@ -236,19 +240,18 @@ const userServices = {
       .catch(err => cb(err))
   },
   getTeacher: (req, cb) => {
-    const thisUser = helpers.getUser(req)
-    delete thisUser.password
     return Teacher.findByPk(req.params.id, {
       raw: true,
       nest: true,
-      thisUser,
       include: [
         { model: User }
       ]
     })
-      .then(async ([teacher, thisUser]) => {
+      .then(async teacher => {
         if (!teacher) throw new Error("Teacher didn't exist!")
         delete teacher.User.password
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
 
         teacher.Ratings = await Rating.findAll({
           where: { teacher_id: teacher.id },
@@ -324,7 +327,7 @@ const userServices = {
 
         // Filter with existing registerations
         // Function to check if two time intervals overlap
-        function doTimeIntervalsOverlap(interval1Start, interval1End, interval2Start, interval2End) {
+        function doTimeIntervalsOverlap (interval1Start, interval1End, interval2Start, interval2End) {
           return (
             (interval1Start <= interval2Start && interval1End >= interval2Start) ||
             (interval1Start <= interval2End && interval1End >= interval2End) ||
@@ -361,9 +364,12 @@ const userServices = {
         }
         teacher.newRegisterations = newRegisterations
 
-        return teacher
+        return [teacher, thisUser]
       })
-      .then(teacher => cb(null, { teacher }))
+      .then(([teacher, thisUser]) => cb(null, {
+        teacher: teacher,
+        thisUser: thisUser
+      }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   editTeacher: (req, cb) => {
@@ -377,9 +383,14 @@ const userServices = {
       .then(async teacher => {
         if (!teacher) throw new Error("Teacher didn't exist!")
         delete teacher.User.password
-        return teacher
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
+        return [teacher, thisUser]
       })
-      .then(teacher => cb(null, { teacher }))
+      .then(([teacher, thisUser]) => cb(null, {
+        teacher: teacher,
+        thisUser: thisUser
+      }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   putTeacher: (req, cb) => {
@@ -443,9 +454,14 @@ const userServices = {
         if (user.Teacher.id) throw new Error('You are already a teacher!')
         if (!user) throw new Error("User didn't exist!")
         delete user.password
-        return user
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
+        return [user, thisUser]
       })
-      .then(user => cb(null, { user }))
+      .then(([user, thisUser]) => cb(null, {
+        user: user,
+        thisUser: thisUser
+      }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   postApply: (req, cb) => {
@@ -547,7 +563,6 @@ const userServices = {
           UserId: thisUser.id,
           TeacherId: req.params.id
         })
-        console.log(result)
         return result
       })
       .then(rating => {
