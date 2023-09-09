@@ -2,6 +2,7 @@
     <thead class="thead-dark">
         <tr>
             <th scope="col">#</th>
+            <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">是否為老師</th>
@@ -10,8 +11,18 @@
     <tbody>
         {{#each users}}
         <tr>
-            <th scope="row">{{this.id}}</th>
-            <td>{{this.name}}</td>
+            <th scope="row">
+                {{this.id}}
+            </th>
+            <td>
+                <img class="img-fluid" src="{{this.avartar}}" width="200px" height="200px"
+                    style="border: outset ; transition: opacity 0.5s; opacity:0; max-width: 40px; height: auto;"
+                    onload="this.style.opacity=1;">
+            </td>
+            <td>
+                {{getFlagEmoji this.nation}}
+                {{this.name}}
+            </td>
             <td>{{this.email}}</td>
             <td>{{this.role}}</td>
         </tr>
@@ -21,8 +32,7 @@
 <nav class="mt-3" aria-label="page navigation">
     <ul class="pagination">
         <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
-            <a class="page-link" href="/admin/users/?page={{pagination.prev}}"
-                aria-label="Previous">
+            <a class="page-link" href="/admin/users/?page={{pagination.prev}}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -36,8 +46,7 @@
         {{/ifCond}}
         {{/each}}
         <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
-            <a class="page-link" href="/admin/users/?page={{pagination.next}}"
-                aria-label="Next">
+            <a class="page-link" href="/admin/users/?page={{pagination.next}}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
