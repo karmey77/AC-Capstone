@@ -7,6 +7,19 @@ const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../../middleware/error-handler')
 const { authenticated, authenticatedAdmin, authenticatedTeacher } = require('../../middleware/auth')
 
+router.get('/auth/google',
+  passport.authenticate('google', {
+    scope:
+            ['email', 'profile']
+  }
+  ))
+
+router.get('/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/users/login'
+  }))
+
 router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)

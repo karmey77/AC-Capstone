@@ -143,7 +143,7 @@ const userServices = {
         const lessonHistory = registrations.filter(lesson => lesson.courseTimeEnd < currentDate)
         user.lessonHistory = lessonHistory
 
-        if (!user.newRegisterations[0].id) delete user.newRegisterations
+        if (user.newRegisterations.length === 0) delete user.newRegisterations
         if (user.lessonHistory.length === 0) delete user.lessonHistory
         return [user, thisUser]
       })
