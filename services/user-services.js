@@ -71,11 +71,6 @@ const userServices = {
     return User.findByPk(req.params.id, {
       raw: true,
       nest: true
-      // include: [
-      //   { model: Rating },
-      //   { model: Teacher },
-      //   { model: Registeration }
-      // ]
     })
       .then(async user => {
         if (!user) throw new Error("User didn't exist!")
@@ -151,9 +146,9 @@ const userServices = {
         if (!user.newRegisterations[0].id) delete user.newRegisterations
         if (user.lessonHistory.length === 0) delete user.lessonHistory
         console.log(user.lessonHistory)
-        return user
+        return [user, thisUser]
       })
-      .then(user => cb(null, { user }))
+      .then(([user, thisUser]) => cb(null, { user, thisUser }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   editUser: (req, cb) => {
@@ -194,6 +189,8 @@ const userServices = {
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   getTeachers: (req, cb) => {
+    const thisUser = helpers.getUser(req)
+    delete thisUser.password
     const keyword = req.query.keyword || null
     const DEFAULT_LIMIT = 6
     const page = Number(req.query.page) || 1
@@ -214,6 +211,7 @@ const userServices = {
     return Teacher.findAndCountAll({
       raw: true,
       nest: true,
+      thisUser,
       limit,
       keyword,
       offset,
@@ -230,6 +228,7 @@ const userServices = {
       })
       .then(([data, pagination, itemsWithContext]) => cb(null, {
         teachers: data,
+        thisUser: thisUser,
         pagination: pagination,
         paginationWithKeyword: itemsWithContext,
         keyword: keyword
@@ -237,14 +236,17 @@ const userServices = {
       .catch(err => cb(err))
   },
   getTeacher: (req, cb) => {
+    const thisUser = helpers.getUser(req)
+    delete thisUser.password
     return Teacher.findByPk(req.params.id, {
       raw: true,
       nest: true,
+      thisUser,
       include: [
         { model: User }
       ]
     })
-      .then(async teacher => {
+      .then(async ([teacher, thisUser]) => {
         if (!teacher) throw new Error("Teacher didn't exist!")
         delete teacher.User.password
 

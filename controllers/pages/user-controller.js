@@ -75,7 +75,7 @@ const userController = {
   postRating: (req, res, next) => {
     userServices.postRating(req, (err, data) => {
       if (err) return next(err)
-      return res.redirect(`/users/${data.rating.dataValues.id}`)
+      return res.redirect(`/users/${data.rating.dataValues.UserId}`)
     })
   }
 }

@@ -2,25 +2,25 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark px-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">AC 家教網</a>
-            {{#if user}}
+            {{#if thisUser}}
 
-            {{#if user.isAdmin}}
+            {{#if thisUser.isAdmin}}
             <li class="nav-item d-inline-flex align-items-center">
                 <a href="/admin" class="text-white nav-link">使用者清單</a>
             </li>
 
             {{else}}
 
-            {{#if user.Teacher.id}}
+            {{#if thisUser.Teacher.id}}
             <li class="nav-item d-inline-flex align-items-center">
-                <a class="btn btn-light" href="/teachers/{{user.Teacher.id}}">Hi, {{ user.name }} 老師</a>
+                <a class="btn btn-light" href="/teachers/{{thisUser.Teacher.id}}">Hi, {{ thisUser.name }} 老師</a>
             </li>
             {{else}}
             <li class="nav-item d-inline-flex align-items-center">
-                <a class="btn btn-light" href="/users/{{user.id}}">Hi, {{ user.name }} 學生</a>
+                <a class="btn btn-light" href="/users/{{thisUser.id}}">Hi, {{ thisUser.name }} 學生</a>
             </li>
             <li class="nav-item d-inline-flex align-items-center">
-                <a class="text-white nav-link" href="/users/{{user.id}}/apply">成為老師</a>
+                <a class="text-white nav-link" href="/users/{{thisUser.id}}/apply">成為老師</a>
             </li>
             {{/if}}
             {{/if}}
