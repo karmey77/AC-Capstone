@@ -14,6 +14,6 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "MYSQL_DATABASE_URL" // 留下這行，其他都刪除
+    "use_env_variable": "MYSQL_DATABASE_URL"
   }
 }
