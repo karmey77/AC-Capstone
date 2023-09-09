@@ -3,9 +3,6 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">AC 家教網</a>
             {{#if user}}
-            <li class="nav-item d-inline-flex align-items-center">
-                <a class="btn btn-light" href="/users/{{user.id}}">Hi, {{ user.name }}</a>
-            </li>
 
             {{#if user.isAdmin}}
             <li class="nav-item d-inline-flex align-items-center">
@@ -14,15 +11,18 @@
 
             {{else}}
 
-            {{#if user.isTeacher}}
-            <li class="nav-item">
-                <a href="/teachers/{{user.id}}" style="padding-right: .5rem;"><button
-                        class="btn btn-light">老師個人檔案</button></a>
+            {{#if user.Teacher}}
+            <li class="nav-item d-inline-flex align-items-center">
+                <a class="btn btn-light" href="/teachers/{{user.Teacher.id}}">Hi, {{ user.name }} 老師</a>
             </li>
-            {{/if}}
+            {{else}}
+            <li class="nav-item d-inline-flex align-items-center">
+                <a class="btn btn-light" href="/users/{{user.id}}">Hi, {{ user.name }} 學生</a>
+            </li>
             <li class="nav-item d-inline-flex align-items-center">
                 <a class="text-white nav-link" href="/users/{{user.id}}/apply">成為老師</a>
             </li>
+            {{/if}}
             {{/if}}
             <ul class="navbar-nav ms-auto mb-2 mb-md-0">
                 <li class="nav-item">
