@@ -252,6 +252,10 @@ const userServices = {
         delete teacher.User.password
         const thisUser = helpers.getUser(req)
         delete thisUser.password
+        thisUser.registration = await Registeration.findAll({
+          where: { user_id: thisUser.id },
+          raw: true
+        })
 
         teacher.Ratings = await Rating.findAll({
           where: { teacher_id: teacher.id },
@@ -337,6 +341,7 @@ const userServices = {
         }
 
         // Filter available course options
+        const thisUserRegistrations = Array.isArray(thisUser.registration) ? thisUser.registration : [thisUser.registration]
         const registrations = Array.isArray(teacher.Registeration) ? teacher.Registeration : [teacher.Registeration]
         const availableCourseOptions = expandedSchedule.filter(option => {
           // Check if this option overlaps with any registration
@@ -352,6 +357,20 @@ const userServices = {
           // Return true for options that don't overlap with any registration
           return !overlap
         })
+          .filter(option => {
+          // Check if this option overlaps with any of this user's registration
+            const overlap = thisUserRegistrations.some(registration => {
+              return doTimeIntervalsOverlap(
+                new Date(option.startTime).getTime(),
+                new Date(option.endTime).getTime(),
+                new Date(registration.courseTimeStart).getTime(),
+                new Date(registration.courseTimeEnd).getTime()
+              )
+            })
+
+            // Return true for options that don't overlap with any of this user's registration
+            return !overlap
+          })
 
         teacher.courseOptions = availableCourseOptions
 
