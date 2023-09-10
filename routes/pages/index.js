@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const passport = require('../../config/passport')
 const userController = require('../../controllers/pages/user-controller')
+const teacherController = require('../../controllers/pages/teacher-controller')
 const upload = require('../../middleware/multer')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../../middleware/error-handler')
@@ -43,7 +44,7 @@ router.get('/teachers/:id/edit', authenticatedTeacher, userController.editTeache
 router.get('/teachers/:id', authenticatedTeacher, userController.getTeacherFromTeacher)
 router.put('/teachers/:id', authenticatedTeacher, upload.single('image'), userController.putTeacher)
 
-router.get('/', authenticated, userController.getTeachers)
+router.get('/', authenticated, teacherController.getTeachers)
 
 router.use('/', generalErrorHandler)
 
