@@ -14,6 +14,7 @@ const port = process.env.PORT || 3000
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const SESSION_SECRET = 'SECRET'
+process.env.TZ = 'Asia/Taipei'
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
