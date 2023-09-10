@@ -20,7 +20,7 @@ router.get('/users/:id/edit', authenticated, authenticatedNormalUser, userContro
 // router.get('/users/:id/apply', authenticated, userController.getApply)
 // router.post('/users/:id/apply', authenticated, userController.postApply)
 router.get('/users/:id', authenticated, authenticatedNormalUser, userController.getUser)
-router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+router.put('/users/:id', authenticated, authenticatedNormalUser, upload.single('image'), userController.putUser)
 
 // router.get('/teachers/:id/edit', authenticatedTeacher, userController.editTeacher)
 // router.get('/teachers/:id', authenticatedTeacher, userController.getTeacherFromTeacher)
