@@ -17,15 +17,14 @@ const adminServices = {
       include: { model: Teacher }
     })
       .then(users => {
-        // users.forEach(user => {
-        //   user.role = user.isAdmin ? '管理員' : (user.Teacher.id ? '老師' : '學生')
-        // })
         const data = users.rows.map(r => ({
           ...r,
           role: r.isAdmin ? '管理員' : (r.Teacher.id ? '老師' : '學生')
         }))
         const thisUser = helpers.getUser(req)
-        delete thisUser.password
+        if (thisUser) {
+          delete thisUser.password
+        }
 
         return cb(null, {
           users: data,
