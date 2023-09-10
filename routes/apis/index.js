@@ -7,7 +7,7 @@ const { authenticated, authenticatedAdmin, authenticatedTeacher, authenticatedNo
 const adminController = require('../../controllers/apis/admin-controller')
 const userController = require('../../controllers/apis/user-controller')
 const registerationController = require('../../controllers/apis/registeration-controller')
-// const ratingController = require('../../controllers/apis/admin-controller')
+const ratingController = require('../../controllers/apis/rating-controller')
 const teacherController = require('../../controllers/apis/teacher-controller')
 
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
@@ -15,7 +15,7 @@ router.get('/admin/users', authenticated, authenticatedAdmin, adminController.ge
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.post('/signup', userController.signUp)
 
-// router.post('/users/score/:id', authenticated, authenticatedNormalUser, userController.postRating)
+router.post('/users/score/:id', authenticated, authenticatedNormalUser, ratingController.postRating)
 router.get('/users/teachers/:id', authenticated, authenticatedNormalUser, teacherController.getTeacher)
 router.post('/users/teachers/:id', authenticated, registerationController.postRegisteration)
 router.get('/users/:id/edit', authenticated, authenticatedNormalUser, userController.editUser)

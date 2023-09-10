@@ -43,12 +43,6 @@ const userController = {
       req.session.createdData = data
       return res.redirect(`/teachers/${req.session.createdData.teacher.dataValues.id}`)
     })
-  },
-  postRating: (req, res, next) => {
-    userServices.postRating(req, (err, data) => {
-      if (err) return next(err)
-      return res.redirect(`/users/${data.rating.dataValues.UserId}`)
-    })
   }
 }
 

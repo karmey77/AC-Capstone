@@ -2,7 +2,6 @@
 const { User, Rating, Teacher, Registeration } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { prettyTime } = require('../helpers/handlebars-helpers')
 const helpers = require('../helpers/auth-helpers')
 const { Op, literal } = require('sequelize') // Import Op and literal
 

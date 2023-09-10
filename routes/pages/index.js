@@ -4,6 +4,7 @@ const passport = require('../../config/passport')
 const userController = require('../../controllers/pages/user-controller')
 const teacherController = require('../../controllers/pages/teacher-controller')
 const registerationController = require('../../controllers/pages/registeration-controller')
+const ratingController = require('../../controllers/pages/rating-controller')
 const upload = require('../../middleware/multer')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../../middleware/error-handler')
@@ -32,7 +33,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
-router.post('/users/score/:id', authenticated, userController.postRating)
+router.post('/users/score/:id', authenticated, ratingController.postRating)
 router.get('/users/teachers/:id', authenticated, teacherController.getTeacher)
 router.post('/users/teachers/:id', authenticated, registerationController.postRegisteration)
 router.get('/users/:id/edit', authenticated, userController.editUser)
