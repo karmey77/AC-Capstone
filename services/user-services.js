@@ -218,6 +218,8 @@ const userServices = {
       })
       .then(user => {
         req.flash('success_messages', '使用者資料編輯成功')
+        delete user.dataValues.password
+        delete user._previousDataValues.password
         return user
       })
       .then(user => cb(null, { user }))
