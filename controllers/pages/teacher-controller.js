@@ -22,4 +22,5 @@ const teacherController = {
       : res.redirect(`/teachers/${req.params.id}`))
   }
 }
+
 module.exports = teacherController

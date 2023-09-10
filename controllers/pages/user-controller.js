@@ -1,6 +1,3 @@
-// const { imgurFileHandler } = require('../../helpers/file-helpers')
-// const { tr } = require('faker/lib/locales')
-// const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../../models')
 const userServices = require('../../services/user-services')
 
 const userController = {
@@ -47,14 +44,6 @@ const userController = {
       return res.redirect(`/teachers/${req.session.createdData.teacher.dataValues.id}`)
     })
   },
-  postRegisteration: (req, res, next) => {
-    userServices.postRegisteration(req, (err, data) => {
-      if (err) return next(err)
-      console.log(data.registration)
-      req.session.createdData = data
-      return res.redirect(`/users/teachers/${data.registration.dataValues.TeacherId}`)
-    })
-  },
   postRating: (req, res, next) => {
     userServices.postRating(req, (err, data) => {
       if (err) return next(err)
@@ -62,4 +51,5 @@ const userController = {
     })
   }
 }
+
 module.exports = userController

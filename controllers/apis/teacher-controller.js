@@ -19,4 +19,5 @@ const teacherController = {
       : res.json({ status: 'success', data }))
   }
 }
+
 module.exports = teacherController
