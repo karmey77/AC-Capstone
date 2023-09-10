@@ -10,6 +10,8 @@ const userController = require('../../controllers/apis/user-controller')
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
 
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+router.post('/signup', userController.signUp)
+
 // router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 // router.post('/signup', userController.signUp)
 
