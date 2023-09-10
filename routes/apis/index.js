@@ -13,7 +13,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.post('/signup', userController.signUp)
 
 // router.post('/users/score/:id', authenticated, userController.postRating)
-// router.get('/users/teachers/:id', authenticated, authenticatedNormalUser, userController.getTeacher)
+router.get('/users/teachers/:id', authenticated, authenticatedNormalUser, teacherController.getTeacher)
 // router.post('/users/teachers/:id', authenticated, userController.postRegisteration)
 // router.get('/users/:id/edit', authenticated, userController.editUser)
 // router.get('/users/:id/apply', authenticated, userController.getApply)
