@@ -40,9 +40,9 @@ router.post('/users/:id/apply', authenticated, userController.postApply)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
-router.get('/teachers/:id/edit', authenticatedTeacher, userController.editTeacher)
+router.get('/teachers/:id/edit', authenticatedTeacher, teacherController.editTeacher)
 router.get('/teachers/:id', authenticatedTeacher, teacherController.getTeacherFromTeacher)
-router.put('/teachers/:id', authenticatedTeacher, upload.single('image'), userController.putTeacher)
+router.put('/teachers/:id', authenticatedTeacher, upload.single('image'), teacherController.putTeacher)
 
 router.get('/', authenticated, teacherController.getTeachers)
 

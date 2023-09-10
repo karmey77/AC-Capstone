@@ -37,26 +37,6 @@ const userController = {
       ? next(err)
       : res.redirect(`/users/${req.params.id}`))
   },
-  // getTeachers: (req, res, next) => {
-  //   userServices.getTeachers(req, (err, data) => err ? next(err) : res.render('index', data))
-  // },
-  // getTeacher: (req, res, next) => {
-  //   userServices.getTeacher(req, (err, data) => {
-  //     if (err) return next(err)
-  //     res.render('users/teacher-profile', data)
-  //   })
-  // },
-  // getTeacherFromTeacher: (req, res, next) => {
-  //   userServices.getTeacher(req, (err, data) => err ? next(err) : res.render('teachers/profile', data))
-  // },
-  editTeacher: (req, res, next) => {
-    userServices.editTeacher(req, (err, data) => err ? next(err) : res.render('teachers/edit', data))
-  },
-  putTeacher: (req, res, next) => {
-    userServices.putTeacher(req, (err, data) => err
-      ? next(err)
-      : res.redirect(`/teachers/${req.params.id}`))
-  },
   getApply: (req, res, next) => {
     userServices.getApply(req, (err, data) => err ? next(err) : res.render('users/apply-teacher', data))
   },

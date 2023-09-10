@@ -9,6 +9,14 @@ const teacherController = {
   },
   getTeacherFromTeacher: (req, res, next) => {
     teacherServices.getTeacher(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  editTeacher: (req, res, next) => {
+    teacherServices.editTeacher(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  putTeacher: (req, res, next) => {
+    teacherServices.putTeacher(req, (err, data) => err
+      ? next(err)
+      : res.json({ status: 'success', data }))
   }
 }
 module.exports = teacherController

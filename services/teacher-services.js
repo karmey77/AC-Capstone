@@ -260,12 +260,65 @@ const teacherServices = {
         delete teacher.User.password
         const thisUser = helpers.getUser(req)
         delete thisUser.password
+        if (thisUser.dataValues) {
+          delete thisUser.dataValues.password
+          delete thisUser._previousDataValues.password
+        }
         return [teacher, thisUser]
       })
       .then(([teacher, thisUser]) => cb(null, {
         teacher: teacher,
         thisUser: thisUser
       }))
+      .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  putTeacher: (req, cb) => {
+    const { name, teacherIntroduction, style, singleCourseDuration, videoLink } = req.body
+    if (!name) throw new Error('User name is required!')
+    if (!teacherIntroduction) throw new Error('Teacher introduction is required!')
+    if (!style) throw new Error('Style is required!')
+    if (!singleCourseDuration) throw new Error('Single course duration is required!')
+    if (!videoLink) throw new Error('Video link is required!')
+
+    const { file } = req // 把檔案取出來
+
+    return Promise.all([ // 非同步處理
+      Teacher.findByPk(req.params.id), // 去資料庫查有沒有這個老師
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(async ([teacher, filePath]) => { // 以上兩樣事都做完以後
+        if (!teacher) throw new Error("Teacher didn't exist!")
+
+        await User.findByPk(teacher.UserId, {
+          name,
+          filePath
+        })
+          .then(user => {
+            user.update({
+              name,
+              avartar: filePath || user.image
+            })
+          })
+
+        return teacher.update({ // 修改這筆資料
+          teacherIntroduction,
+          style,
+          singleCourseDuration,
+          videoLink,
+          availableMon: req.body.availableMon === 'on',
+          availableTues: req.body.availableTues === 'on',
+          availableWed: req.body.availableWed === 'on',
+          availableThurs: req.body.availableThurs === 'on',
+          availableFri: req.body.availableFri === 'on',
+          availableSat: req.body.availableSat === 'on',
+          availableSun: req.body.availableSun === 'on'
+        })
+      })
+      .then(teacher => {
+        req.flash('success_messages', '老師資料編輯成功')
+        return teacher
+      })
+      .then(teacher => cb(null, { teacher }))
       .catch(err => cb(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   }
 }

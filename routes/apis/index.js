@@ -22,9 +22,9 @@ router.post('/users/:id/apply', authenticated, authenticatedNormalUser, userCont
 router.get('/users/:id', authenticated, authenticatedNormalUser, userController.getUser)
 router.put('/users/:id', authenticated, authenticatedNormalUser, upload.single('image'), userController.putUser)
 
-// router.get('/teachers/:id/edit', authenticatedTeacher, userController.editTeacher)
+router.get('/teachers/:id/edit', authenticated, authenticatedTeacher, teacherController.editTeacher)
 router.get('/teachers/:id', authenticated, authenticatedTeacher, teacherController.getTeacherFromTeacher)
-// router.put('/teachers/:id', authenticatedTeacher, upload.single('image'), userController.putTeacher)
+router.put('/teachers/:id', authenticated, authenticatedTeacher, upload.single('image'), teacherController.putTeacher)
 
 router.get('/', authenticated, authenticatedNormalUser, teacherController.getTeachers)
 
