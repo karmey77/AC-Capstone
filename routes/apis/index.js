@@ -23,7 +23,7 @@ router.get('/users/:id', authenticated, authenticatedNormalUser, userController.
 router.put('/users/:id', authenticated, authenticatedNormalUser, upload.single('image'), userController.putUser)
 
 // router.get('/teachers/:id/edit', authenticatedTeacher, userController.editTeacher)
-// router.get('/teachers/:id', authenticatedTeacher, userController.getTeacherFromTeacher)
+router.get('/teachers/:id', authenticated, authenticatedTeacher, teacherController.getTeacherFromTeacher)
 // router.put('/teachers/:id', authenticatedTeacher, upload.single('image'), userController.putTeacher)
 
 router.get('/', authenticated, authenticatedNormalUser, teacherController.getTeachers)

@@ -9,6 +9,9 @@ const teacherController = {
       if (err) return next(err)
       res.render('users/teacher-profile', data)
     })
+  },
+  getTeacherFromTeacher: (req, res, next) => {
+    teacherServices.getTeacher(req, (err, data) => err ? next(err) : res.render('teachers/profile', data))
   }
 }
 module.exports = teacherController
