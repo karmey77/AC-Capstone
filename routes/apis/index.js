@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const admin = require('./modules/admin')
 const passport = require('../../config/passport')
 const { apiErrorHandler } = require('../../middleware/error-handler')
-const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth')
+const { authenticated, authenticatedAdmin, authenticatedTeacher, authenticatedNormalUser } = require('../../middleware/api-auth')
 const adminController = require('../../controllers/apis/admin-controller')
 const userController = require('../../controllers/apis/user-controller')
 
@@ -12,12 +11,7 @@ router.get('/admin/users', authenticated, authenticatedAdmin, adminController.ge
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.post('/signup', userController.signUp)
 
-// router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
-// router.post('/signup', userController.signUp)
+router.get('/', authenticated, authenticatedNormalUser, userController.getTeachers)
 
-// router.use('/admin', authenticated, authenticatedAdmin, admin)
-// router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
-// router.get('/restaurants/:id', authenticated, restController.getRestaurant)
-// router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', apiErrorHandler)
 module.exports = router
