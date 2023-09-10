@@ -17,7 +17,7 @@ router.post('/signup', userController.signUp)
 
 router.post('/users/score/:id', authenticated, authenticatedNormalUser, ratingController.postRating)
 router.get('/users/teachers/:id', authenticated, authenticatedNormalUser, teacherController.getTeacher)
-router.post('/users/teachers/:id', authenticated, registerationController.postRegisteration)
+router.post('/users/teachers/:id', authenticated, authenticatedNormalUser, registerationController.postRegisteration)
 router.get('/users/:id/edit', authenticated, authenticatedNormalUser, userController.editUser)
 router.get('/users/:id/apply', authenticated, authenticatedNormalUser, userController.getApply)
 router.post('/users/:id/apply', authenticated, authenticatedNormalUser, userController.postApply)

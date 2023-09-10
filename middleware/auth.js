@@ -9,6 +9,7 @@ const authenticated = (req, res, next) => {
     }
     return next()
   }
+  req.flash('error_messages', '請先登入！')
   res.redirect('/signin')
 }
 const authenticatedAdmin = (req, res, next) => {
@@ -16,6 +17,7 @@ const authenticatedAdmin = (req, res, next) => {
     if (helpers.getUser(req).isAdmin) return next()
     res.redirect('/')
   } else {
+    req.flash('error_messages', '請先登入！')
     res.redirect('/signin')
   }
 }
@@ -25,6 +27,7 @@ const authenticatedTeacher = (req, res, next) => {
     if (isTeacher) return next()
     res.redirect('/')
   } else {
+    req.flash('error_messages', '請先登入！')
     res.redirect('/signin')
   }
 }
