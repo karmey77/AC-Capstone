@@ -18,7 +18,7 @@ router.get('/users/teachers/:id', authenticated, authenticatedNormalUser, teache
 // router.get('/users/:id/edit', authenticated, userController.editUser)
 // router.get('/users/:id/apply', authenticated, userController.getApply)
 // router.post('/users/:id/apply', authenticated, userController.postApply)
-// router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id', authenticated, userController.getUser)
 // router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 // router.get('/teachers/:id/edit', authenticatedTeacher, userController.editTeacher)
