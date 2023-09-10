@@ -75,8 +75,18 @@ const teacherServices = {
       .then(teachers => {
         const data = teachers.rows.map(r => ({
           ...r,
-          teacherIntroduction: r.teacherIntroduction.substring(0, 35) + ' ...'
+          teacherIntroduction: r.teacherIntroduction.substring(0, 35) + ' ...',
+          User: {
+            ...r.User,
+            password: null
+          }
         }))
+        const thisUser = helpers.getUser(req)
+        delete thisUser.password
+        if (thisUser.dataValues) {
+          delete thisUser.dataValues.password
+          delete thisUser._previousDataValues.password
+        }
         const pagination = getPagination(limit, page, teachers.count)
         const itemsWithContext = pagination.pages.map(pageNumber => ({ page: pageNumber, keyword }))
         return [data, pagination, itemsWithContext]
