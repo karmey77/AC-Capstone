@@ -31,6 +31,14 @@ const userController = {
     userServices.putUser(req, (err, data) => err
       ? next(err)
       : res.json({ status: 'success', data }))
+  },
+  getApply: (req, res, next) => {
+    userServices.getApply(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  postApply: (req, res, next) => {
+    userServices.postApply(req, (err, data) => err
+      ? next(err)
+      : res.json({ status: 'success', data }))
   }
 }
 module.exports = userController

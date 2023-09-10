@@ -508,6 +508,10 @@ const userServices = {
         delete user.password
         const thisUser = helpers.getUser(req)
         delete thisUser.password
+        if (thisUser.dataValues) {
+          delete thisUser.dataValues.password
+          delete thisUser._previousDataValues.password
+        }
         return [user, thisUser]
       })
       .then(([user, thisUser]) => cb(null, {
